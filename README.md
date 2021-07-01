@@ -2,7 +2,7 @@
 
 Private source code for the first game project. 
 
-Access is limited to:
+Direct access is available only for:
 
-Dawid Waldemar Jakubowski (Codedemens/Codejakubek)
-Andrzej Blaszczyk
+ - Dawid Waldemar Jakubowski (Codedemens/Codejakubek)
+ - Andrzej Blaszczyk
