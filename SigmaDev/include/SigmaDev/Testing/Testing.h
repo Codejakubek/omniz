@@ -756,6 +756,8 @@ static SD_TestInserter test_inserter##test_name = SD_TestInserter( \
 #define SD_CHECK_FALSE_H1(check_id, value) \
     AddCheck(check_id, !(value));
 
+#define SD_CHECK_VALUE_H1(check_id) GetCheck(check_id)
+
 #define SD_CHECK_SET_TRUE_H1(check_id, value) \
     SetCheck(check_id, value);
 
@@ -892,8 +894,10 @@ static SD_TestInserter test_inserter##test_name = SD_TestInserter( \
  */
 #define SD_CHECK_FALSE(check_id, value) SD_CHECK_FALSE_H1(check_id, value)
 
-#define SD_CHECK_SET_TRUE(check_id, value) SD_CHECK_SET_TRUE_H1(check_id, value)
-#define SD_CHECK_SET_FALSE(check_id, value) SD_CHECK_SET_FALSE_H1(check_id, value)
+#define SD_CHECK_VALUE(check_id) SD_CHECK_VALUE_H1(check_id)
+
+#define SD_CHECK_SET_TRUE(check_id) SD_CHECK_SET_TRUE_H1(check_id, true)
+#define SD_CHECK_SET_FALSE(check_id) SD_CHECK_SET_FALSE_H1(check_id, false)
 
 /**
  * @brief Expects an exception, if it's catched, asserts true

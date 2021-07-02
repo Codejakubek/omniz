@@ -38,7 +38,7 @@
 //         TODO: Tests (sd_generic_variable_access)
 //
 //
-//     TODO: Create SD_GenericVariableLoadingRules
+//     TODO: Create SD_GenericVariable::SD_LoadRule
 //         TODO: Tests (sd_generic_variable_loading_rules)
 //
 //
@@ -59,6 +59,8 @@
 //
 //
 //     TODO: Start working on SD_GUIObject
+
+
 
 ////////////////////////////////////////
 class SD_GenericVariable;
@@ -95,6 +97,29 @@ public:
 protected:
 
 };
+////////////////////////////////////////
+class SD_ILoadingRule : public SD_Class {
+public:
+    SD_DECLARE_CLASS_H()
+
+    SD_ILoadingRule() = delete;
+    SD_ILoadingRule(const std::string& id);
+
+
+    inline const std::string& GetId() const {
+        return id;
+    }
+    inline bool IsReady() const {
+        return ready;
+    }
+    //std::type_index ValueTypeClass() const;
+protected:
+    std::string id;
+
+    bool ready = false;
+};
+////
+
 ////////////////////////////////////////
 template <typename VALUE_TYPE>
 class SD_GenericRawValue : public SD_GenericValue<VALUE_TYPE> {
@@ -454,6 +479,92 @@ public:
 protected:
     _Variables variables;
 };
+////////////////////////////////////////
+// Load rule
+// 
+// SD_GenericValue <- const nlohmann::json
+template <typename VALUE_TYPE, typename GENERIC_VALUE_TYPE = SD_GenericRawValue<VALUE_TYPE>>
+class SD_JSONLoadRule : public SD_ILoadingRule {
+public:
+
+    SD_DECLARE_CLASS_H()
+
+    SD_JSONLoadRule() = delete;
+    SD_JSONLoadRule(const std::string& id) : SD_ILoadingRule(id) {}
+    virtual ~SD_JSONLoadRule() {}
+
+    // You need to specialize this one!
+    void Load(
+        const nlohmann::json& json_input,
+        GENERIC_VALUE_TYPE& variable_output
+    ) const;
+
+    inline void SetJSONVariablePath(const SD_StringPath& json_path) {
+        this->json_path;
+        this->ready = true;
+    }
+    inline const SD_StringPath& GetJSONVariablePath() const {
+        return json_path;
+    }
+protected:
+    SD_StringPath json_path;
+};
+////
+// Save rule
+// 
+// nlohmann::json <- const SD_GenericValue
+template <typename VALUE_TYPE, typename GENERIC_VALUE_TYPE = SD_GenericRawValue<VALUE_TYPE>>
+class SD_JSONSaveRule : public SD_ILoadingRule {
+public:
+
+    SD_DECLARE_CLASS_H()
+
+    SD_JSONSaveRule() = delete;
+    SD_JSONSaveRule(const std::string& id) : SD_ILoadingRule(id) {}   
+    virtual ~SD_JSONSaveRule() {}
+
+    // You need to specialize this one!
+    void Save(
+        const GENERIC_VALUE_TYPE& variable_input,
+        nlohmann::json& json_output
+    ) const;
+
+    inline void SetJSONVariablePath(const SD_StringPath& json_path) {
+        this->json_path;
+        this->ready = true;
+    }   
+    inline const SD_StringPath& GetJSONVariablePath() const {
+        return this->json_path;
+    }
+protected:
+    SD_StringPath json_path;
+};
+////
+//TODO
+////    template <typename VALUE_TYPE, typename GENERIC_VALUE_TYPE = SD_GenericRawValue<VALUE_TYPE>>
+////    class SD_LuaLoadRule : public SD_ILoadingRule {
+////    public:
+////    
+////        SD_DECLARE_CLASS_H()
+////    
+////        SD_LuaLoadRule() = delete;
+////        SD_LuaLoadRule(const std::string& id);      
+////    protected:
+////    
+////    };
+////
+//TODO
+////    template <typename VALUE_TYPE, typename GENERIC_VALUE_TYPE = SD_GenericRawValue<VALUE_TYPE>>
+////    class SD_LuaSaveRule : public SD_ILoadingRule {
+////    public:
+////    
+////        SD_DECLARE_CLASS_H()
+////    
+////        SD_LuaSaveRule() = delete;
+////        SD_LuaSaveRule(const std::string& id);      
+////    protected:
+////    
+////    };
 
 
 #endif

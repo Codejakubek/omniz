@@ -38,6 +38,17 @@
     }       \
 
 
+#define SD_DECLARE_CLASS_CPP_TEMPLATE_2(CLASS_NAME, TEMPLATE_PARAM_1, TEMPLATE_PARAM_2)    \
+    template<>    \
+    std::type_index CLASS_NAME<TEMPLATE_PARAM_1, TEMPLATE_PARAM_2>::ClassType() const {   \
+        return typeid(CLASS_NAME<TEMPLATE_PARAM_1, TEMPLATE_PARAM_2>);   \
+    }   \
+    template<>   \
+    std::string CLASS_NAME<TEMPLATE_PARAM_1, TEMPLATE_PARAM_2>::ClassTypeName() const {   \
+        return std::string( std::string() + #CLASS_NAME + "<" + #TEMPLATE_PARAM_1 + ", " + #TEMPLATE_PARAM_2 + ">");   \
+    }       \
+
+
 #define SD_DECLARE_CLASS_CPP_NESTED1(PARENT_CLASS_NAME, CLASS_NAME) \
     std::type_index PARENT_CLASS_NAME::CLASS_NAME::ClassType() const { \
         return typeid(PARENT_CLASS_NAME::CLASS_NAME); \

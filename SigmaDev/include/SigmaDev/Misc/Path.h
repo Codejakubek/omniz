@@ -15,11 +15,13 @@
 #ifndef SD_MISC_PATH_H
 #define SD_MISC_PATH_H
 
+#include <SigmaDev/Misc/Optional.h>
 #include <SigmaDev/Misc/Class.h>
 #include <initializer_list>
 #include <vector>
 #include <string>
 #include <list>
+#include <nlohmann/json.hpp>
 
 ////////////////////////////////////////
 
@@ -131,6 +133,7 @@ public:
     inline std::size_t Size() const {
         return path.size();
     }
+    
 protected:
     /**
      * @brief Process the tokenized list of string IDS.
@@ -150,6 +153,20 @@ protected:
     std::list<std::string> path;
     std::string untokenized;
 };
+
+SD_OptionalConstRef<nlohmann::json> 
+SD_Go(const nlohmann::json& json, const SD_StringPath& variable_path);
+
+SD_OptionalRef<nlohmann::json> 
+SD_Go(nlohmann::json& json, const SD_StringPath& variable_path);
+
+void SD_OutputNiceJson(const nlohmann::json& json);
+std::string SD_NiceJson(const nlohmann::json& json);
+void SD_JSONSave(const nlohmann::json& json, const std::string& filepath);
+void SD_JSONLoad(nlohmann::json& json, const std::string& filepath);
+
+template <typename VALUE_TYPE>
+SD_Optional<VALUE_TYPE> SD_JSONVar(const nlohmann::json& j, const SD_StringPath& path);
 
 /**
  * @var SD_StringPath::path

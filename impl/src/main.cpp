@@ -18,7 +18,7 @@
 #include <SigmaDev/Main/Main.h>
 
 
-
+//#define OZ_GLSL_TEST
 //#define OZ_STANDARD_CORE_INITIALIZATION
 #define OZ_SIGMADEV_TESTING
 //#define OTHER_LUA_TESTING
@@ -27,8 +27,78 @@
 #include <Other_LuaTesting.h>
 #endif
 
-int main(int argc, char* argv[]) {
+#include <SFML/Graphics.hpp>
+#include <SFML/Main.hpp>
 
+
+void GLSLTest() {
+    sf::RenderWindow w;
+    w.create(sf::VideoMode(600,400), "zzz");
+    sf::Sprite sprite;
+    sf::Sprite sprite2;
+
+    sprite.setPosition(sf::Vector2f(0,0));
+    sprite2.setPosition(sf::Vector2f(0,0));
+
+    sf::Texture texture;
+    texture.loadFromFile("test.png");
+    sprite.setTexture(texture);
+
+    sf::RenderTexture render_texture_;
+    render_texture_.create(600,400);
+    render_texture_.clear(sf::Color(0,0,0,0));
+    render_texture_.draw(sprite);
+    sprite2.setTexture(render_texture_.getTexture());
+
+
+    sf::Shader shader;
+    shader.loadFromFile("shader.glsl", sf::Shader::Type::Fragment);
+    
+
+    sf::RenderStates render_states;
+    render_states.shader = &shader;
+
+    sprite.setOrigin(texture.getSize().x/2, texture.getSize().y/2);
+    sprite.setPosition(300,200);
+    
+
+    w.setFramerateLimit(60);
+    float x = 0.0f;
+    float y = 0.0f;
+    
+    float angle = 0;
+    float opacity = 1.0f;
+    while (w.isOpen()) {
+        opacity *= 0.994f;
+        angle += 0.60f;
+      
+        sprite.setRotation(angle);
+        if (angle > 360.0f) {
+            angle = angle-360.0f;
+        }
+        sf::Event e;
+        while (w.pollEvent(e)) {
+            if (e.type == sf::Event::Closed) {
+                w.close();
+            }
+        }
+        x += 0.00002f;
+        y += 0.00002f;
+        shader.setUniform("blur_offset", sf::Vector2f(x, y));
+        shader.setUniform("opacity", opacity);
+
+        
+        w.clear();
+        w.draw(sprite, render_states);
+        //w.draw(sprite2, render_states);
+        w.display();
+    }
+}
+
+int main(int argc, char* argv[]) {
+#ifdef OZ_GLSL_TEST
+    GLSLTest();
+#endif
 #ifdef OTHER_LUA_TESTING
     Other_LuaTesting1();
 #endif

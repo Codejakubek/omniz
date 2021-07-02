@@ -17,6 +17,7 @@
 
 SD_DECLARE_CLASS_CPP(SD_GenericVariable)
 SD_DECLARE_CLASS_CPP(SD_ObjectValue)
+SD_DECLARE_CLASS_CPP(SD_ILoadingRule)
 
 
 SD_DECLARE_CLASS_CPP_TEMPLATE_1(SD_GenericValue, int)
@@ -78,6 +79,67 @@ SD_DECLARE_CLASS_CPP_TEMPLATE_1(SD_GenericValue, sf::Vector3f)
 SD_DECLARE_CLASS_CPP_TEMPLATE_1(SD_GenericRawValue, sf::Vector3f)
 SD_DECLARE_CLASS_CPP_TEMPLATE_1(SD_GenericSharedPtrValue, sf::Vector3f)
 SD_DECLARE_CLASS_CPP_TEMPLATE_1(SD_GenericUniquePtrValue, sf::Vector3f)
+
+SD_DECLARE_CLASS_CPP_TEMPLATE_2(SD_JSONLoadRule, int, SD_GenericRawValue<int>)
+SD_DECLARE_CLASS_CPP_TEMPLATE_2(SD_JSONSaveRule, int, SD_GenericSharedPtrValue<int>)
+SD_DECLARE_CLASS_CPP_TEMPLATE_2(SD_JSONSaveRule, int, SD_GenericUniquePtrValue<int>)
+
+SD_DECLARE_CLASS_CPP_TEMPLATE_2(SD_JSONLoadRule, std::string, SD_GenericRawValue<std::string>)
+SD_DECLARE_CLASS_CPP_TEMPLATE_2(SD_JSONSaveRule, std::string, SD_GenericSharedPtrValue<std::string>)
+SD_DECLARE_CLASS_CPP_TEMPLATE_2(SD_JSONSaveRule, std::string, SD_GenericUniquePtrValue<std::string>)
+
+////////////////////////////////////////
+
+SD_ILoadingRule::SD_ILoadingRule(const std::string& id) : id(id) {}
+
+////////////////////////////////////////
+//
+// SPEC. of the SD_JSONLoadRules!
+
+template<>
+void SD_JSONLoadRule<int, SD_GenericRawValue<int>>::Load(
+    const nlohmann::json& json_input,
+    SD_GenericRawValue<int>& variable_output
+) const {
+
+    //variable_output.SetValue(value);
+}
+template<>
+void SD_JSONLoadRule<int, SD_GenericSharedPtrValue<int>>::Load(
+    const nlohmann::json& json_input,
+    SD_GenericSharedPtrValue<int>& variable_output
+) const {
+
+}
+template<>
+void SD_JSONLoadRule<int, SD_GenericUniquePtrValue<int>>::Load(
+    const nlohmann::json& json_input,
+    SD_GenericUniquePtrValue<int>& variable_output
+) const {
+
+}
+template<>
+void SD_JSONLoadRule<std::string, SD_GenericRawValue<std::string>>::Load(
+    const nlohmann::json& json_input,
+    SD_GenericRawValue<std::string>& variable_output
+) const {
+
+}
+template<>
+void SD_JSONLoadRule<std::string, SD_GenericSharedPtrValue<std::string>>::Load(
+    const nlohmann::json& json_input,
+    SD_GenericSharedPtrValue<std::string>& variable_output
+) const {
+
+}
+template<>
+void SD_JSONLoadRule<std::string, SD_GenericUniquePtrValue<std::string>>::Load(
+    const nlohmann::json& json_input,
+    SD_GenericUniquePtrValue<std::string>& variable_output
+) const {
+
+}
+
 ////////////////////////////////////////
 SD_GenericVariable::SD_GenericVariable(const std::string& variable_id) : variable_id(variable_id) {
 
